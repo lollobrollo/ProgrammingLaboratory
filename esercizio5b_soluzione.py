@@ -1,7 +1,7 @@
 class CSVFile:
 
     def __init__(self, name):
-        
+
         # Setto il nome del file
         self.name = name
         
