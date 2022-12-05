@@ -10,7 +10,7 @@ class CSVFile():
             test_string.readline()
         except Exception as e:
             self.is_empty = True
-            print('Errore in apertura del file: {}'.format(e))
+            print('Errore in apertura del file: "{}"'.format(e))
 
             
     def get_data(self):
@@ -26,8 +26,13 @@ class CSVFile():
             my_file = open(self.name, 'r')
             
             for row in my_file:
+                #per ogni riga splitto sulla virgola
                 elements = row.split(',')
-                elements[-1] = elements[-1].strip('\n')
+
+                #rimuovo i caratteri speciali
+                elements[-1] = elements[-1].strip()
+
+                #se non sono sulla prima riga 
                 if elements[0] != 'Date':
                     result.append(elements)
                     
@@ -42,41 +47,53 @@ class CSVFile():
 
 class NumericalCSVFile(CSVFile):
 
-    #def __init__(self, name):
-    #    super().__init__(name)
-
     # self solo nella definizione, non nella chiamata
     def get_data(self):
-        values = super().get_data()
+        string_values = super().get_data()
+        
+        #creo lista per immagazzinare i valori convertiti a float
         num_values = []
-        if values != None:    #se il file non è vuoto
-            for row in values:    #per ogni riga della lista
-                temp_row = []    
-                test_float = True
-                for i,column in enumerate(row):    #per ogni colonna delle righe
-                    while test_float:
-                        if i == 0: #se  sono nella prima colonna
-                            temp_row.append(column)
-                        else:    
-                            num_val = None
-                            try:
-                                 num_val = float(column)
-                            except Exception as e:
-                                test_float = False
-                                print('Errore, il valore "{}" non è numerico: "{}"'.format(val, e))
-                                
-                    if test_float:
-                            temp_row.append(num_val)
+
+        #se il file non è vuoto
+        if string_values != None:
+
+            #per ogni riga della lista
+            for row in string_values:
                 
+                #creo lista temporanea per i valori della riga
+                temp_row = []
+                #setto una flag a True
+                test_float = True
+
+                #per ogni elemento nella riga
+                for i,column in enumerate(row):
+                    #se sono nella prima colonna
+                    if i == 0: 
+                        temp_row.append(column)
+
+                    #se non sto processando la data
+                    else:
+                        #provo a convertire a float il valore
+                        try:
+                             num_val = float(column)
+                            
+                        #se non ci riesco alzo la flag per saltare la riga
+                        except Exception as e:
+                            test_float = False
+                            print('Errore, il valore "{}" non è numerico: "{}"'.format(num_val, e))
+                        if test_float:
+                            temp_row.append(num_val)
+                    
                 if test_float:
                     num_values.append(temp_row)
+                    
             return num_values
 
         else:    #se il file è vuoto
             print('Errore, il file è vuoto.')
             return None
 
-"""
+'''
 file = NumericalCSVFile('shampoo_sales.txt')
-print(file.original_get_data())
-"""
+print(file.get_data())
+'''
