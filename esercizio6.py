@@ -59,12 +59,19 @@ class CSVFile():
        
         #creo una variabile per il valore di start
         start_value = 1
-        
+
+            
         #controllo sul valore di start
         if(start != None):
-
+            
+            #provo a convertire il valore a intero
+            try:
+                start = int(start)
+            except:
+                raise Exception('Errore, il valore inserito non è intero.')
+                return None
+            
             #controllo se start è un valore intero
-
             if(type(start) == int):
                 start_value = start
             else:
@@ -76,11 +83,20 @@ class CSVFile():
                 raise Exception('Errore, il  valore di start non è valido.')
                 return None
 
+
+                
         #creo  una variabile per il valore di end
         end_value = lunghezza
         
         #passo a controllare il valore di end
         if(end != None):
+
+            #provo a convertire il valore a intero
+            try:
+                end = int(end)
+            except:
+                raise Exception('Errore, il valore inserito non è intero.')
+                return None
 
             #controllo se è un valore intero
             if(type(end) == int):
@@ -90,24 +106,25 @@ class CSVFile():
                 return None
 
             #controllo se il valore è valido nel mio caso
-            if(end_value < start_value or end_value < start_value):
+            if(end_value < start_value or end_value >= lunghezza):
                 raise Exceprion('Errore, il valore di end non è valido.')
 
 
         my_file.close()
-       
+
+        
         #se non ho valori di start e end restituisco tutta la stringa
         if(start == None and end == None):
-            return data
+            return data[1:]
 
         if(start == None and end != lunghezza):
-            return data[0:end_value]
+            return data[1:end_value]
 
         if(start != None and end == None):
-            return data[start_value:]
+            return data[start_value-1:]
 
         if(start != None and end != None):
-            return data[start_value:end_value]
+            return data[start_value-1:end_value]
 
 
   
