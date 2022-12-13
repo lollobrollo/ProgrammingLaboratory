@@ -12,7 +12,7 @@ class Model():
         #predict non implementato nella classe base
         raise NotImplementedError('Metodo non implementato')
 
-        
+
 #-------======= sottoclasse che implementa metodo predict =======-------#
         
 class IncrementModel(Model):
@@ -22,8 +22,8 @@ class IncrementModel(Model):
         #procedo a sanitizzare gli input
 
         #controllo se ho una lista in input
-        if type(data) != 'list':
-            raise Exception('Errore, il file non è una lista.')
+        if type(data) != list:
+            raise TypeError('Errore, il file non è una lista.')
 
         #controllo se la lista è vuota
         if(data == None):
@@ -38,33 +38,41 @@ class IncrementModel(Model):
             try:
                 element = float(element)
             except Exception as e:
-                raise Exception('Errore nella conversione a float: "{}"'.format(e))
+                print('Errore nella conversione a float: "{}"'.format(e))
 
-        #controllo se il valore è positivo
+        #controllo se il valore è negativo
         for element in data:
             if element < 0:
                 raise Exception('Errore, inseriti valori negativi.')
 
-                
+
         #calcolo l'incremento medio
-        temp = None
+        precedente = None
         med_value = 0
-
+        
         for item in data:
-            if temp == None:
-                temp = int(item)
+            if precedente == None:
+                precedente = int(item)
             else:
-                med_value += item - temp
-                temp = int(item)
+                med_value += item - precedente
+                
+                precedente = int(item)
 
+        #calcolo l'incremento medio
         med_increment = med_value / (len(data)-1)
 
+        
+        # if incremento >= 0:
+        predicted_value = int(data[-1]) + med_increment  
+        # else:
+        # #rendo negativo l'incremento se serve
+        #     predicted_value = int(data[-1]) - med_increment
+
         #calcolo e restituisco il valore predetto
-        predicted_value = int(data[-1]) + med_increment
         return predicted_value
 
 
-# data = [50, 52, 60]
-data = {'1':1}
-model = IncrementModel()
-print(model.predict(data))
+# # data = [50, 52, 60]
+# data = {'1':1}
+# model = IncrementModel()
+# print(model.predict(data))
