@@ -11,7 +11,7 @@ class Model():
     def predict(self, data):
         #predict non implementato nella classe base
         raise NotImplementedError('Metodo non implementato')
-
+#
 
 #-------======= sottoclasse che implementa metodo predict =======-------#
         
@@ -43,7 +43,7 @@ class IncrementModel(Model):
         #controllo se il valore è negativo
         for element in data:
             if element < 0:
-                raise Exception('Errore, inseriti valori negativi.')
+                print('Attenzione, alcuni valori inseriti sono negativi.')
 
 
         #calcolo l'incremento medio
@@ -70,9 +70,11 @@ class IncrementModel(Model):
 
         #calcolo e restituisco il valore predetto
         return predicted_value
+#
 
 
-# # data = [50, 52, 60]
+
+# data = [50, 20, -10]
 # data = {'1':1}
 # model = IncrementModel()
 # print(model.predict(data))
