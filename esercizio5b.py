@@ -40,7 +40,7 @@ class CSVFile():
             return result
 
 
-            
+
 #==============================
 # Classe per file NumericalCSV
 #==============================
