@@ -1,6 +1,7 @@
 class ExamException(Exception):
     pass
 
+
 class CSVFile():
     def __init__(self, name):
         self.name = name
@@ -16,8 +17,9 @@ class CSVTimeSeriesFile(CSVFile):
         try:
             input_data = open(self.name, 'r')
         except:
-            raise ExamException('Errore, file con il nome cercato inesistente.')
-            
+            raise ExamException('Errore, file con il nome desiderato inesistente.')
+
+        # assumo che in ogni caso la prima colonna contenga l'epoch, la seconda la temperatura
         output_data = []
         previous_epoch = 0
         for line in input_data:
@@ -35,7 +37,6 @@ class CSVTimeSeriesFile(CSVFile):
             except:
                 pass
 
-        
         return output_data
 
 
@@ -47,51 +48,45 @@ def compute_daily_max_difference(data_list):
         raise ExamException('Errore, lista non valida.')
 
     one_day = 86400
-    previous_epoch = None
+    previous_day = None
     daily_temperatures = []
     output_list = []
     for line in data_list:
-        #prima iterazione
-        if previous_epoch == None:
+        # prima iterazione
+        if previous_day == None:
             daily_temperatures.append(line[1])
-            previous_epoch = line[0]
-        #iterazioni intermedie
+            previous_day = line[0] - (line[0]%one_day)
+        # iterazioni intermedie
         elif line != data_list[-1]:
-            #dato dello stesso giorno
-            if line[0]%one_day > previous_epoch%one_day:
-                previous_epoch = line[0]
+            # dato dello stesso giorno
+            if line[0] < previous_day + one_day:
                 daily_temperatures.append(line[1])
-            #dato del giorno seguente
+            # dato del giorno seguente
             else:
-                output_list.append(my_average(daily_list))
-                daily_list = []
-                daily_list.append(list[1])
-                previous_epoch = line[0]
-        #ultima iterazione
+                output_list.append(max_delta(daily_temperatures))
+                daily_temperatures = []
+                daily_temperatures.append(line[1])
+                previous_day += one_day
+        # ultima iterazione
         else:
-            #stesso giorno
-            if line[0]%one_day > previous_epoch%one_day:
+            # stesso giorno
+            if line[0] < previous_day + one_day:
                 daily_temperatures.append(line[1])
-                output_list.append(my_average(daily_temperatures))
-            #giorno seguente
+                output_list.append(max_delta(daily_temperatures))
+            # giorno seguente
             else:
-                output_list.append(my_average(daily_list))
+                output_list.append(max_delta(daily_temperatures))
                 output_list.append(None)
-        return output_list
+    return output_list
 
 
-def my_average(list):
+def max_delta(list):
     if len(list) == 1:
-        print('none')
         return None
-    sum = 0
-    for value in list:
-        sum += value
-    print('somma')
-    return float(sum/len(list))
+    return round(max(list) - min(list), 2)
 
 
 
-time_series_file = CSVTimeSeriesFile(name = 'data.csv')
-time_series = time_series_file.get_data()
-print(compute_daily_max_difference(time_series))
+# time_series_file = CSVTimeSeriesFile(name = 'data.csv')
+# time_series = time_series_file.get_data()
+# print(compute_daily_max_difference(time_series))
