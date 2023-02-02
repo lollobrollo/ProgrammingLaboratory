@@ -7,9 +7,9 @@ class CSVFile():
         self.name = name
         if not(isinstance(self.name, str)):
             raise ExamException('Errore, il nome non è una stringa.')
-            
+
     def get_data(self):
-         pass
+         raise NotImplementedError('Metodo non implementato.')
 
 
 class CSVTimeSeriesFile(CSVFile):
@@ -23,13 +23,13 @@ class CSVTimeSeriesFile(CSVFile):
         output_data = []
         previous_epoch = 0
         for line in input_data:
-            line_elements = line.split(',')
-            line_elements[1].strip()
             try:
+                line_elements = line.split(',')
+                line_elements[1].strip()
                 line_elements[0] = int(line_elements[0])
                 line_elements[1] = float(line_elements[1])
                 output_data.append(line_elements[0:2])
-                                    
+
                 if line_elements[0] > previous_epoch:
                     previous_epoch = line_elements[0]
                 else:
@@ -40,9 +40,10 @@ class CSVTimeSeriesFile(CSVFile):
         return output_data
 
 
+# il metodo assume che non ci siano 'buchi' di giornate nella lista
 def compute_daily_max_difference(data_list):
     try:
-        if len(data_list) < 1:
+        if len(data_list) == 0:
             raise ExamException('Errore, lista vuota.')
     except:
         raise ExamException('Errore, lista non valida.')
@@ -86,7 +87,7 @@ def max_delta(list):
     return round(max(list) - min(list), 2)
 
 
-
-# time_series_file = CSVTimeSeriesFile(name = 'data.csv')
+# time_series_file = CSVTimeSeriesFile(name = 'prove.csv')
 # time_series = time_series_file.get_data()
+# # print(time_series)
 # print(compute_daily_max_difference(time_series))
