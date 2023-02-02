@@ -84,10 +84,11 @@ def compute_daily_max_difference(data_list):
 def max_delta(list):
     if len(list) == 1:
         return None
-    return round(max(list) - min(list), 2)
+    # return round(max(list) - min(list), 2)
+    return max(list) - min(list)
 
 
-# time_series_file = CSVTimeSeriesFile(name = 'prove.csv')
-# time_series = time_series_file.get_data()
-# # print(time_series)
-# print(compute_daily_max_difference(time_series))
+time_series_file = CSVTimeSeriesFile(name = 'data.csv')
+time_series = time_series_file.get_data()
+# print(time_series)
+print(compute_daily_max_difference(time_series))
